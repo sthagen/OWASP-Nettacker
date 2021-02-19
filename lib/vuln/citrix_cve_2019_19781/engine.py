@@ -25,7 +25,7 @@ from lib.socks_resolver.engine import getaddrinfo
 from core._time import now
 from core.log import __log_into_file
 import requests
-
+from lib.payload.wordlists import useragents
 
 def extra_requirements_dict():
     return {
@@ -66,19 +66,13 @@ def citrix_vuln(target, port, timeout_sec, log_in_file, language, time_sleep,
     try:
         s = conn(target, port, timeout_sec, socks_proxy)
         if not s:
-            if verbose_level > 4:
-                warn('unable to connect to: {} on port: {} timeout: {}'.format(target,port,timeout_sec))
             return False
         else:
             if target_type(target) != "HTTP" and port == 443:
                 target = 'https://' + target
             if target_type(target) != "HTTP" and port == 80:
                 target = 'http://' + target
-            user_agent_list = [
-			                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0",
-			                "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Ubuntu/10.04",
-	                        "Mozilla/5.0 (Linux; Android 9; Mi A3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Mobile Safari/537.36"
-                       ]
+            user_agent_list = useragents.useragents()
     
             user_agent = {'User-agent': random.choice(user_agent_list)}
             # as a pre-requisite check that CSS return the word citrix
@@ -102,7 +96,7 @@ def citrix_vuln(target, port, timeout_sec, log_in_file, language, time_sleep,
         return False
 
 
-def __citrix_vuln(target, port, timeout_sec, log_in_file, language, time_sleep,
+def __citrix_vuln(target, port, timeout_sec, log_in_file, language, verbose_level, time_sleep,
                      thread_tmp_filename, socks_proxy, scan_id, scan_cmd):
     if citrix_vuln(target, port, timeout_sec, log_in_file, language, time_sleep,
                       thread_tmp_filename, socks_proxy, scan_id, scan_cmd):
@@ -145,7 +139,7 @@ def start(target, users, passwds, ports, timeout_sec, thread_number, num, total,
         for port in ports:
             port = int(port)
             t = threading.Thread(target=__citrix_vuln,
-                                 args=(target, int(port), timeout_sec, log_in_file, language, time_sleep,
+                                 args=(target, int(port), timeout_sec, log_in_file, language, verbose_level, time_sleep,
                                        thread_tmp_filename, socks_proxy, scan_id, scan_cmd))
             threads.append(t)
             t.start()
@@ -167,17 +161,17 @@ def start(target, users, passwds, ports, timeout_sec, thread_number, num, total,
         # wait for threads
         kill_switch = 0
         kill_time = int(
-            timeout_sec / 0.1) if int(timeout_sec / 0.1) is not 0 else 1
+            timeout_sec / 0.1) if int(timeout_sec / 0.1) != 0 else 1
         while 1:
             time.sleep(0.1)
             kill_switch += 1
             try:
-                if threading.activeCount() is 1 or kill_switch is kill_time:
+                if threading.activeCount() == 1 or kill_switch == kill_time:
                     break
             except KeyboardInterrupt:
                 break
         thread_write = int(open(thread_tmp_filename).read().rsplit()[0])
-        if thread_write is 1 and verbose_level is not 0:
+        if thread_write == 1 and verbose_level != 0:
             info(messages(language, "no_vulnerability_found").format(
                 'citrix_cve_2019_19781 not found'))
             data = json.dumps({'HOST': target, 'USERNAME': '', 'PASSWORD': '', 'PORT': '', 'TYPE': 'citrix_cve_2019_19781',
