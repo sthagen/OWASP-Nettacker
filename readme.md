@@ -1,10 +1,10 @@
 OWASP Nettacker
 =========
-[Build Status](https://github.com/OWASP/Nettacker/workflows/CI/badge.svg?branch=master)
+[![Build Status](https://github.com/OWASP/Nettacker/workflows/CI/badge.svg?branch=master)](https://github.com/OWASP/Nettacker/actions/workflows/CI.yml)
 [![Apache License](https://img.shields.io/badge/License-Apache%20v2-green.svg)](https://github.com/OWASP/Nettacker/blob/master/LICENSE)
 [![Twitter](https://img.shields.io/badge/Twitter-@iotscan-blue.svg)](https://twitter.com/iotscan)
-![GitHub contributors](https://img.shields.io/github/contributors/zdresearch/OWASP-Nettacker)
-[![repo size ](https://img.shields.io/github/repo-size/zdresearch/OWASP-Nettacker)](https://github.com/OWASP/Nettacker)
+![GitHub contributors](https://img.shields.io/github/contributors/OWASP/Nettacker)
+[![repo size ](https://img.shields.io/github/repo-size/OWASP/Nettacker)](https://github.com/OWASP/Nettacker)
 
 
 <img src="https://raw.githubusercontent.com/zdresearch/OWASP-Nettacker/master/web/static/img/owasp-nettacker.png" width="200"><img src="https://raw.githubusercontent.com/zdresearch/OWASP-Nettacker/master/web/static/img/owasp.png" width="500">
@@ -31,9 +31,26 @@ OWASP Nettacker project is created to automate information gathering, vulnerabil
 * OpenHub: https://www.openhub.net/p/OWASP-Nettacker
 * **Donate**: https://owasp.org/donate/?reponame=www-project-nettacker&title=OWASP+Nettacker
 
+____________
+Quick Setup & Run
+============
+```bash
+$ docker-compose up -d && docker exec -it nettacker_nettacker_1 /bin/bash
+# python nettacker.py -i owasp.org -s -m port_scan
+```
+* Results are accessible from your (https://localhost:5000) or https://nettacker-api.z3r0d4y.com:5000/ (pointed to your localhost)
+* The local database is `.data/nettacker.db` (sqlite).
+* Default results path is `.data/results`
+* `docker-compose` will share your nettacker folder, so you will not lose any data after `docker-compose down`
+* To see the API key in you can run `docker logs nettacker_nettacker_1`.
+* More details and setup without docker https://github.com/OWASP/Nettacker/wiki/Installation
+_____________
+Thanks to our awesome contributors
+============
+![Awesome Contributors](https://contrib.rocks/image?repo=OWASP/Nettacker)
 _____________
 
-* *** IoT Scanner***
+## ***IoT Scanner***
 *	Python Multi Thread & Multi Process Network Information Gathering Vulnerability Scanner
 *	Service and Device Detection ( SCADA, Restricted Areas, Routers, HTTP Servers, Logins and Authentications, None-Indexed HTTP, Paradox System, Cameras, Firewalls, UTM, WebMails, VPN, RDP, SSH, FTP, TELNET Services, Proxy Servers and Many Devices like Juniper, Cisco, Switches and many more… ) 
 *	Asset Discovery & Network Service Analysis
