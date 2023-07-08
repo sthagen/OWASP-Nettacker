@@ -1,13 +1,13 @@
 info:
-  name: x_powered_by_vuln
+  name: http_redirect_scan
   author: OWASP Nettacker Team
   severity: 3
-  description:
+  description: HTTP Redirect scan checks if a target website responds with a 3xx status code
   reference:
   profiles:
-    - vuln
-    - vulnerability
+    - scan
     - http
+    - backup
     - low_severity
 
 payloads:
@@ -34,9 +34,12 @@ payloads:
                 - 443
         response:
           condition_type: or
+          log: "response_dependent['status_code'] response_dependent['headers']['Location']"
           conditions:
+            status_code:
+              regex: 3\d\d
+              reverse: false
             headers:
-              x-powered-by:
-                regex: "\\S+"
+              Location:
+                regex: .*  
                 reverse: false
-          log: "response_dependent['headers']['x-powered-by']"

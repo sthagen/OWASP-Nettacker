@@ -1,13 +1,13 @@
 info:
-  name: x_powered_by_vuln
+  name: status_scan
   author: OWASP Nettacker Team
   severity: 3
-  description:
+  description: HTTP Status scan
   reference:
   profiles:
-    - vuln
-    - vulnerability
+    - scan
     - http
+    - backup
     - low_severity
 
 payloads:
@@ -21,7 +21,7 @@ payloads:
         ssl: false
         url:
           nettacker_fuzzer:
-            input_format: "{{schema}}://{target}:{{ports}}/"
+            input_format: "{{schema}}://{target}:{{ports}}"
             prefix: ""
             suffix: ""
             interceptors:
@@ -34,9 +34,8 @@ payloads:
                 - 443
         response:
           condition_type: or
+          log: "response_dependent['status_code']"
           conditions:
-            headers:
-              x-powered-by:
-                regex: "\\S+"
-                reverse: false
-          log: "response_dependent['headers']['x-powered-by']"
+            status_code:
+              regex: \d\d\d
+              reverse: false
